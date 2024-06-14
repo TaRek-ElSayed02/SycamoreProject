@@ -1,0 +1,99 @@
+user chice model
+<?php
+
+namespace App\Models;
+
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class UserChoice extends Model
+{
+    use HasFactory;
+    protected $fillable = ['choice'];
+
+    public function patient()
+    {
+        return $this->belongsTo(Patient::class);
+    }
+}
+
+----------
+user choice controller 
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\UserChoice;
+use App\Models\Patient;
+
+class UserChoiceController extends Controller
+{
+    public function store(Request $request, $patientId)
+    {
+        // Validate the request data
+        $request->validate([
+            'choice' => 'required|in:Pulmonary fibrosis,Pulmonary embolism,Pneumonia,Interstitial lung disease',
+        ]);
+
+        // Check if the patient exists
+        $patient = Patient::find($patientId);
+        if (!$patient) {
+            return response()->json(['message' => 'Patient not found'], 404);
+        }
+
+        // Create a new user choice for the patient
+        $choice = new UserChoice();
+        $choice->choice = $request->choice;
+        $choice->patient_id = $patientId; // Associate the choice with the patient
+        $choice->save();
+
+        return response()->json(['message' => 'Choice stored successfully'], 201);
+    }
+}
+
+----------
+user migration
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::disableForeignKeyConstraints();
+        Schema::create('user_choices', function (Blueprint $table) {
+            $table->id();
+            $table->string('choice');
+            $table->foreignId('Patient_id')->references('id')->on('patients')->constrained()->onDelete('cascade');
+            $table->timestamps();
+        });
+        Schema::enableForeignKeyConstraints();
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('user_choice');
+        Schema::enableForeignKeyConstraints(); 
+    }
+};
+----------------
+
+patient model
+
+ public function userChoice()
+    {
+        return $this->hasOne(UserChoice::class);
+    }
+
