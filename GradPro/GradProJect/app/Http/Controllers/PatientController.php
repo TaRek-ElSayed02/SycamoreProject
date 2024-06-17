@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rules;
 #added
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Log;
 #added token 
 use Laravel\Sanctum\PersonalAccessToken;
 #---------
@@ -130,12 +131,49 @@ class PatientController extends Controller
         return response()->json(['message' => 'Profile updated successfully',
         'PhoneNumber' => $PhoneNumber,
     ], 200);
-
-
-
-    
-
     }
+
+    #edit tempreture--------------------------------------------------------------- >>>>>>>>
+    public function updateTemperature(Request $request, $id)
+    {
+        \Log::info('Incoming request data:', $request->all());
+    
+        // Fetch the patient record by ID
+        $patient = Patient::find($id);
+    
+        // Check if patient exists
+        if (!$patient) {
+            return response()->json(['error' => 'Patient not found'], 404);
+        }
+    
+        // Validate the request input
+        $validatedData = $request->validate([
+            'Temperature' => 'required|numeric',
+        ], [
+            'Temperature.required' => 'The temperature field is required.',
+            'Temperature.numeric' => 'The temperature field must be a number.',
+        ]);
+    
+        // Log the request data
+        \Log::info('Request data for temperature update:', [
+            'PatientID' => $id,
+            'Temperature' => $validatedData['Temperature'],
+        ]);
+    
+        // Cast Temperature to float
+        $temperature = (float) $validatedData['Temperature'];
+    
+        // Update the patient's temperature
+        $patient->update([
+            'Temperature' => $temperature,
+        ]);
+    
+        // Return a success response
+        return response()->json(['message' => 'Temperature updated successfully'], 200);
+    }
+    
+    
+    # end edit tempreture-------------------------------------------->>>>> 
 
 
    #retrieve patient info---------------------------------------------->>>>>

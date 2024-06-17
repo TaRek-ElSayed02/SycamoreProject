@@ -53,6 +53,7 @@ Route::controller(PatientController::class)->group(function(){
     Route::get('search/{Name}','search');
     Route::get('list','list');
     Route::delete('patients/{id}','destroy');
+    Route::put('/patient/{id}/temperature','updateTemperature');
 });
 
 #Patient delete according to id 

@@ -23,7 +23,7 @@ return new class extends Migration
             $table->smallInteger('Age')->nullable();
             $table->smallInteger('Height')->nullable();
             $table->smallInteger('Weight')->nullable();
-            $table->smallInteger('Temperature')->nullable();
+            $table->float('Temperature')->nullable();
             $table->string('PhoneNumber')->nullable();
             $table->string('Password_Confirmation')->nullable();
             $table->timestamps();
