@@ -24,6 +24,7 @@ class DoctorController extends Controller{
     public function register(Request $request)
     {
         $validator= Validator::make($request->all(),[
+            'Name' => 'required|string',
             'Email'=>'required|string|email|unique:doctors,Email',
             'Password'=>'required|string|min:7',
             'Password_Confirmation'=>'required|string|min:7'
@@ -34,6 +35,8 @@ class DoctorController extends Controller{
         }
         $doctor= Doctor::create(array_merge(
             $validator->validated(), 
+            ['Name' => $request->input('Name')],
+            ['Email' => $request->input('Email')],
             ['Password' => bcrypt($request->Password)],
             #added
             ['Password_Confirmation' => bcrypt($request->Password_Confirmation)],
@@ -57,6 +60,7 @@ class DoctorController extends Controller{
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'Name' => 'required|string',
             'Email' => 'required|email',
             'Password' => 'required|string|min:7',
         ]);
@@ -65,6 +69,7 @@ class DoctorController extends Controller{
             return response()->json($validator->errors(), 422);
         }
     
+        $Name = $request->input('Name');
         $email = $request->input('Email');
         $password = $request->input('Password');
     
@@ -73,7 +78,7 @@ class DoctorController extends Controller{
         if ($authenticatedDoctor && Hash::check($password, $authenticatedDoctor->Password)) {
             $token = $authenticatedDoctor->createToken('DoctorAuthToken')->plainTextToken;
     
-            return $this->createToken($token, $email, $password);  
+            return $this->createToken($token, $email, $password,$Name);  
         } else {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
@@ -81,13 +86,14 @@ class DoctorController extends Controller{
     
 
     
-    public function createToken($token, $email, $password)
+    public function createToken($token, $email, $password ,$Name)
     {
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60,
             'email' => $email,
+            'Name'=>$Name,
             'password' => $password,
         ]);
     }
