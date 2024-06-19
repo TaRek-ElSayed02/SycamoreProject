@@ -16,6 +16,8 @@ use Laravel\Sanctum\PersonalAccessToken;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+//use App\Http\Controllers\Sensor_Data;
+use App\Models\Sensor_Data;
 
 
 class PatientController extends Controller
@@ -127,6 +129,13 @@ class PatientController extends Controller
             'Temperature' => $request->Temperature,
             'PhoneNumber' => $request->PhoneNumber, 
         ]);
+
+        // Create a new sensor data record
+    Sensor_Data::create([
+        
+        'clieus' => $request->Temperature,
+        'Patient_id' => $patient->id,
+    ]);
     
         return response()->json(['message' => 'Profile updated successfully',
         'PhoneNumber' => $PhoneNumber,

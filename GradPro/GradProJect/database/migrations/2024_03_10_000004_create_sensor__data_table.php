@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->smallInteger('oxygen_rate');
             $table->smallInteger('heart_rate');
-            $table->smallInteger('clieus');
+            $table->float('clieus');
             $table->float('prediction')->nullable(); // Column to store the prediction result
             $table->foreignId('Patient_id')->references('id')->on('patients')->constrained()->onDelete('cascade');
             $table->timestamps();

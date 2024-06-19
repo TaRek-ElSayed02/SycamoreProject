@@ -18,6 +18,7 @@ class Sensor_Data extends Model
         'heart_rate',
         'clieus',
         'prediction',
+        'Patient_id',
     ];
     
 
