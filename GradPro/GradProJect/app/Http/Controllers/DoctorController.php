@@ -128,4 +128,12 @@ class DoctorController extends Controller{
         }
     }
 
+    public function listname(Request $request)
+    {
+        $doctorNames = Doctor::select('Name')->get(); // Retrieve only the names of all doctors
+        return response()->json(['doctors' => $doctorNames],200);
+    }
+
+
+
 }
