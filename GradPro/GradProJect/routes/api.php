@@ -37,7 +37,7 @@ Route::controller(DoctorController::class)->group(function(){
     Route::post('/logout','logout');
     Route::get('doctorinfo','doctorinfo');
     Route::delete('doctors/{id}','destroy');
-    Route::get('listname','listname') 
+    Route::get('listname','listname'); 
 });
 
 
