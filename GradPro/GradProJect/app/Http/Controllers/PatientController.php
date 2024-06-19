@@ -149,6 +149,7 @@ class PatientController extends Controller
     
         // Fetch the patient record by ID
         $patient = Patient::find($id);
+        $sensordata=Sensor_Data::find($id);
     
         // Check if patient exists
         if (!$patient) {
@@ -176,6 +177,11 @@ class PatientController extends Controller
         $patient->update([
             'Temperature' => $temperature,
         ]);
+        
+        $sensordata->update([
+            'clieus' => $temperature
+        ]);
+        
     
         // Return a success response
         return response()->json(['message' => 'Temperature updated successfully'], 200);
