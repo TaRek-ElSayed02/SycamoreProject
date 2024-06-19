@@ -25,11 +25,10 @@ class Sensor_Data extends Model
     {
         return $this->belongsTo(Oxygen_Generator::class);
     }
-    protected static function booted()
+
+    public function patient()
     {
-        static::created(function ($sensorData) {
-            $controller = new SensorDataController(); // Replace with your actual controller name
-            $controller->makePrediction();
-        });
+        return $this->belongsTo(Patient::class);
     }
+   
 }

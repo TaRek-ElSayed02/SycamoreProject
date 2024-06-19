@@ -62,5 +62,9 @@ class Patient extends Model
         return $this->hasOne(UserChoice::class);
     }
 
+    public function sensorData()
+    {
+        return $this->hasMany(Sensor_Data::class);
+    }
  
 }
