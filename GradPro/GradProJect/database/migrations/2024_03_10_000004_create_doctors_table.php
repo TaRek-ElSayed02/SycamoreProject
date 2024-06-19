@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::disableForeignKeyConstraints();
         Schema::create('doctors', function (Blueprint $table) {
             $table->id();
+            $table->string('Name')->nullable();
             $table->string('NewPassword')->nullable();
             $table->string('Email')->nullable();
             $table->string('Password')->nullable();

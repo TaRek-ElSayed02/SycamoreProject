@@ -19,7 +19,7 @@ class Doctor extends Model
     use Notifiable;
     protected $table = 'doctors';
 
-    protected $fillable = ['NewPassword', 'Email', 'Password', 'Password_Confirmation'];
+    protected $fillable = ['NewPassword', 'Email', 'Password', 'Password_Confirmation','Name'];
 
     public function alarms()
     {
