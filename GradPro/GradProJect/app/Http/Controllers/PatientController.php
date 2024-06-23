@@ -22,6 +22,8 @@ use App\Models\Sensor_Data;
 
 class PatientController extends Controller
 {
+
+    #patient register
     public function pregister(Request $request)
     {
         
@@ -48,8 +50,6 @@ class PatientController extends Controller
 
         #added
         $token = $patient->createToken('PatientAuthToken')->plainTextToken;
-
-
         return response()->json([
             'message' => "Patient successfully registered",
             'Patient' => $patient,
@@ -57,9 +57,9 @@ class PatientController extends Controller
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60,
         ],201);
-        
     }
 
+    #patient login
     public function plogin(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -84,8 +84,6 @@ class PatientController extends Controller
             return response()->json(['error' => 'Unauthorized' ], 401);
         }
     }
-    
-    
     public function createToken($token, $email, $password)
     {
         return response()->json([
@@ -98,15 +96,13 @@ class PatientController extends Controller
     }
   
 #commint
+#complete register for patient
     public function form(Request $request, $id)
-    {
-        
+    {  
         $patient = Patient::find($id);
-    
         if (!$patient) {
             return response()->json(['error' => 'Patient not found'], 404);
         }
-
         $PhoneNumber = $request->PhoneNumber;
         // Log the request data
         \Log::info('Request data:', [
@@ -115,11 +111,8 @@ class PatientController extends Controller
             'Height' => $request->Height,
             'Weight' => $request->Weight,
             'Temperature' => $request->Temperature,
-            'PhoneNumber' => $request->PhoneNumber,
-            
+            'PhoneNumber' => $request->PhoneNumber,     
         ]);
-        
-    
         // Update patient's profile
         $patient->update([
             'Name' => $request->Name,
@@ -129,14 +122,11 @@ class PatientController extends Controller
             'Temperature' => $request->Temperature,
             'PhoneNumber' => $request->PhoneNumber, 
         ]);
-
-        // Create a new sensor data record
-    Sensor_Data::create([
-        
+  // Create a new sensor data record
+    Sensor_Data::create([ 
         'clieus' => $request->Temperature,
         'Patient_id' => $patient->id,
     ]);
-    
         return response()->json(['message' => 'Profile updated successfully',
         'PhoneNumber' => $PhoneNumber,
     ], 200);
@@ -146,16 +136,13 @@ class PatientController extends Controller
     public function updateTemperature(Request $request, $id)
     {
         \Log::info('Incoming request data:', $request->all());
-    
         // Fetch the patient record by ID
         $patient = Patient::find($id);
         $sensordata=Sensor_Data::find($id);
-    
         // Check if patient exists
         if (!$patient) {
             return response()->json(['error' => 'Patient not found'], 404);
         }
-    
         // Validate the request input
         $validatedData = $request->validate([
             'Temperature' => 'required|numeric',
@@ -163,31 +150,23 @@ class PatientController extends Controller
             'Temperature.required' => 'The temperature field is required.',
             'Temperature.numeric' => 'The temperature field must be a number.',
         ]);
-    
         // Log the request data
         \Log::info('Request data for temperature update:', [
             'PatientID' => $id,
             'Temperature' => $validatedData['Temperature'],
         ]);
-    
         // Cast Temperature to float
         $temperature = (float) $validatedData['Temperature'];
-    
         // Update the patient's temperature
         $patient->update([
             'Temperature' => $temperature,
         ]);
-        
         $sensordata->update([
             'clieus' => $temperature
         ]);
-        
-    
         // Return a success response
         return response()->json(['message' => 'Temperature updated successfully'], 200);
     }
-    
-    
     # end edit tempreture-------------------------------------------->>>>> 
 
 
@@ -196,11 +175,12 @@ class PatientController extends Controller
    {
        $patients = Patient::all(); // Retrieve all patients
        return response()->json($patients);
-   }
-   
+    }
+    
+    #end of retrieve patient info---------------------------------------------->>>>>
 
-   #logout
-   public function plogout(Request $request)
+   #logout for patient
+   public function plogout(Request $request)#logout for patient
     {
         $acessToken = $request->bearerToken();
         $token = PersonalAccessToken::findToken($acessToken);
@@ -211,24 +191,19 @@ class PatientController extends Controller
                 'status' => 'success'
             ], status:200);
     }
-
-    #search
+    #search for patient with name
     public function search($Name)
     {
         return Patient::where("Name",$Name)->get();
 
     }
-
-
     #list
     public function list(Request $request)
     {
         $patients = Patient::take(10)->get(); // Retrieve 10 patients
         return response()->json(['patients' => $patients], 200);
     }      
-    
     #this is patient when choose one disease from radio button screen
-
     #delete patient according to his id 
     public function destroy($id)
     {

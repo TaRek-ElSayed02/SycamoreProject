@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class DoctorController extends Controller{
 
+    #doctor register
     public function register(Request $request)
     {
         $validator= Validator::make($request->all(),[
@@ -40,13 +41,9 @@ class DoctorController extends Controller{
             ['Password' => bcrypt($request->Password)],
             #added
             ['Password_Confirmation' => bcrypt($request->Password_Confirmation)],
- 
         ));
-
         #added
         $token = $doctor->createToken('DoctorAuthToken')->plainTextToken;
-
-
         return response()->json([
             'message' => "Doctor successfully registered",
             'Doctor' => $doctor,
@@ -57,6 +54,7 @@ class DoctorController extends Controller{
     
     }
 
+    #doctor login
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -83,9 +81,6 @@ class DoctorController extends Controller{
             return response()->json(['error' => 'Unauthorized'], 401);
         }
     }
-    
-
-    
     public function createToken($token, $email, $password ,$Name)
     {
         return response()->json([
@@ -134,6 +129,7 @@ class DoctorController extends Controller{
         }
     }
 
+    #list names of doctors
     public function listname(Request $request)
     {
         $doctorNames = Doctor::select('Name')->get(); // Retrieve only the names of all doctors
